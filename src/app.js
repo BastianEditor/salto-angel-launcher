@@ -109,7 +109,6 @@ async function cargarConfig() {
     if (configValida(guardada)) config = normalizarConfig(guardada);
     pintarConfig();
 
-    if (CONFIG_REMOTA.includes('PENDIENTE_')) return;
     try {
         const r = await fetchConTiempo(CONFIG_REMOTA + '?t=' + Date.now(), 8000);
         if (!r.ok) return;
