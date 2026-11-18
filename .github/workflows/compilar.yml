@@ -1,0 +1,104 @@
+# Compila Salto Ángel Launcher en los servidores de GitHub (Windows). En la PC del servidor no se instala nada.
+# - Cada cambio en main: "revisar" compila el .exe sin instalador, para saber si el código está bien.
+#   El .exe queda en la pestaña Actions → la corrida → Artifacts.
+# - Cada etiqueta vX.Y.Z (ejemplo v0.1.0): "publicar" arma el instalador firmado para la actualización automática
+#   y deja la versión como BORRADOR en Releases. Se publica a mano después de probarla.
+name: Compilar launcher
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  # Antes de compilar: si una prueba falla, no se arma nada (ni prueba ni instalador)
+  pruebas:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Revisar que el JavaScript no tenga errores
+        run: node --check src/app.js
+      - name: Revisar que los JSON sean válidos
+        run: |
+          node -e "for (const f of ['src/config.json','publicar/config.json','src-tauri/tauri.conf.json','src-tauri/capabilities/default.json','package.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('ok', f) }"
+      - name: Revisar que los scripts de PowerShell se puedan leer
+        shell: powershell
+        run: |
+          foreach ($f in 'src-tauri/scripts/optimizar.ps1', 'src-tauri/scripts/probar_optimizador.ps1') {
+            $e = $null; [void][System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $f), [ref]$null, [ref]$e)
+            if ($e.Count) { $e | ForEach-Object { Write-Host $_ }; exit 1 }
+            $b = [IO.File]::ReadAllBytes((Resolve-Path $f))
+            if (-not ($b[0] -eq 0xEF -and $b[1] -eq 0xBB -and $b[2] -eq 0xBF)) { Write-Host "$f tiene que estar en UTF-8 con BOM"; exit 1 }
+          }
+      - name: Pruebas del optimizador (PC de mentira, sin tocar la del runner)
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File src-tauri/scripts/probar_optimizador.ps1
+      - name: Nada pendiente de configurar en una versión publicada
+        if: github.ref_type == 'tag'
+        shell: powershell
+        run: |
+          $p = Select-String -Path src-tauri/tauri.conf.json, src/app.js -Pattern 'PENDIENTE_' -SimpleMatch -CaseSensitive
+          if ($p) { $p | ForEach-Object { Write-Host $_ }; Write-Host 'Faltan valores PENDIENTE (clave pública o usuario de GitHub)'; exit 1 }
+
+  revisar:
+    needs: pruebas
+    if: github.ref_type == 'branch'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+      - run: npm install
+      - name: Revisar el código Rust con clippy (avisos = error)
+        working-directory: src-tauri
+        run: |
+          rustup component add clippy
+          cargo clippy --release -- -D warnings
+      - run: npx tauri build --no-bundle
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SaltoAngelLauncher-prueba
+          path: src-tauri/target/release/SaltoAngelLauncher.exe
+          retention-days: 14
+
+  publicar:
+    needs: pruebas
+    if: github.ref_type == 'tag'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+      - run: npm install
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'Salto Ángel Launcher ${{ github.ref_name }}'
+          releaseBody: |
+            Baja el archivo que termina en **-setup.exe**, ábrelo y sigue los pasos.
+            Si Windows muestra "Windows protegió su PC", dale a **Más información → Ejecutar de todas formas** (pasa porque el launcher es nuevo).
+            Es opcional: igual puedes entrar desde FiveM con cfx.re/join/m4qzz8q.
+          releaseDraft: true
+          prerelease: false
+          includeUpdaterJson: true

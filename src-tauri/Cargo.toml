@@ -1,0 +1,30 @@
+[package]
+name = "salto-angel-launcher"
+version = "0.1.0"
+description = "Launcher de Salto Ángel RP: abre el FiveM oficial y conecta al servidor"
+authors = ["Salto Ángel"]
+edition = "2021"
+
+[lib]
+# Nombre distinto al del binario (lo pide Tauri en Windows)
+name = "salto_angel_launcher_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+tauri-plugin-updater = "2"
+tauri-plugin-single-instance = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Compilación final liviana: menos peso del .exe y sin trucos que asusten a los antivirus (nada de UPX)
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

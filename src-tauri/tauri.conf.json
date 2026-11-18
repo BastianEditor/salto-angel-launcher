@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Salto Angel Launcher",
+  "mainBinaryName": "SaltoAngelLauncher",
+  "version": "0.1.0",
+  "identifier": "ve.saltoangel.launcher",
+  "build": {
+    "frontendDist": "../src"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "principal",
+        "title": "Salto Ángel Launcher",
+        "width": 1100,
+        "height": 660,
+        "minWidth": 960,
+        "minHeight": 600,
+        "center": true,
+        "resizable": true,
+        "decorations": false,
+        "shadow": true,
+        "backgroundColor": "#060a12"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; connect-src 'self' ipc: http://ipc.localhost https://frontend.cfx-services.net https://raw.githubusercontent.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "createUpdaterArtifacts": true,
+    "publisher": "Salto Ángel RP",
+    "copyright": "Salto Ángel RP",
+    "category": "Game",
+    "shortDescription": "Launcher de Salto Ángel RP",
+    "longDescription": "Abre el FiveM oficial y te conecta a Salto Ángel RP. No modifica FiveM ni el GTA V.",
+    "resources": ["scripts/optimizar.ps1"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "webviewInstallMode": { "type": "downloadBootstrapper" },
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": ["Spanish"],
+        "displayLanguageSelector": false,
+        "installerIcon": "icons/icon.ico",
+        "headerImage": "instalador/encabezado.bmp",
+        "sidebarImage": "instalador/lateral.bmp"
+      }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDFFMEZDOTBCNUEyQ0UxNUQKUldSZDRTeGFDOGtQSHB1TjlBcFBWR3lRYUZTWXkvbThodmRxL2RCeE1GazJRR21KcU5ybUp2VkYK",
+      "endpoints": [
+        "https://github.com/BastianEditor/salto-angel-launcher/releases/latest/download/latest.json"
+      ],
+      "windows": { "installMode": "passive" }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Permisos de la ventana del launcher: solo moverla, minimizarla y cerrarla. Lo demás va por los comandos propios de lib.rs.",
+  "windows": ["principal"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-minimize",
+    "core:window:allow-close",
+    "core:window:allow-start-dragging"
+  ]
+}

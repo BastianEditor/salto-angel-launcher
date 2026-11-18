@@ -1,0 +1,42 @@
+{
+  "_nota": "Configuración que trae el launcher por dentro. La copia de publicar/config.json en GitHub la reemplaza sin sacar versión nueva.",
+  "servidor": {
+    "nombre": "Salto Ángel",
+    "codigo": "m4qzz8q",
+    "maxJugadores": 128
+  },
+  "lema": "La ciudad te está esperando. Dale a Jugar y entras directo, sin buscar el servidor en la lista.",
+  "aviso": "",
+  "enlaces": [
+    { "id": "discord", "texto": "Discord", "url": "https://discord.gg/EP7ZVHtQrU" },
+    { "id": "normas", "texto": "Normas", "url": "" },
+    { "id": "guia", "texto": "Guía", "url": "" },
+    { "id": "web", "texto": "Web", "url": "" }
+  ],
+  "noticias": [
+    {
+      "fecha": "15/11",
+      "tipo": "oro",
+      "etiqueta": "Novedad",
+      "titulo": "Plaza Bolívar renovada",
+      "texto": "Ahora llegas al centro, con casilleros comunitarios y papeleras.",
+      "url": ""
+    },
+    {
+      "fecha": "15/11",
+      "tipo": "vio",
+      "etiqueta": "Crimen",
+      "titulo": "Robos a tiendas nuevos",
+      "texto": "Caja fuerte, tendero que reacciona y más lugares para robar.",
+      "url": ""
+    },
+    {
+      "fecha": "16/11",
+      "tipo": "verde",
+      "etiqueta": "Empleos",
+      "titulo": "Mototaxi y Corpoelec",
+      "texto": "Dos trabajos nuevos para hacer plata honrada en la ciudad.",
+      "url": ""
+    }
+  ]
+}

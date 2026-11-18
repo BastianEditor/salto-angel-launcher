@@ -1,0 +1,7 @@
+node_modules/
+src-tauri/target/
+src-tauri/gen/
+package-lock.json
+# Nunca subir la clave privada de las actualizaciones
+*.key
+claves/

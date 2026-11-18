@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salto Ángel Launcher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="ventana">
+    <!-- Barra de título propia (se arrastra para mover la ventana) -->
+    <div class="titulo" data-tauri-drag-region>
+        <span class="nombre" data-tauri-drag-region>Salto <b>Ángel</b> · Launcher</span>
+        <span class="version" id="version" data-tauri-drag-region>v0.1.0</span>
+        <span class="esp" data-tauri-drag-region></span>
+        <button class="ctrl" id="btn-min" title="Minimizar"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+        <button class="ctrl cerrar" id="btn-cerrar" title="Cerrar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+
+    <nav class="lado">
+        <img class="emblema" src="img/emblema.webp" alt="Salto Ángel">
+        <button class="nav activo" data-vista="inicio"><svg class="ico" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span class="tip">Inicio</span></button>
+        <button class="nav" data-vista="optimizar"><svg class="ico" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><span class="tip">Optimizar mi PC</span></button>
+        <div class="abajo">
+            <button class="nav" data-vista="ajustes"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span class="tip">Ajustes</span></button>
+        </div>
+    </nav>
+
+    <main class="contenido">
+        <div class="fondo"></div><div class="fondo-velo"></div>
+
+        <!-- Aviso del staff (sale de la configuración remota) -->
+        <div class="banda-aviso oculto" id="banda-aviso"><svg class="ico" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span id="aviso-txt"></span></div>
+
+        <!-- Actualización disponible -->
+        <div class="banda-act oculto" id="banda-act">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+            <span>Hay una versión nueva del launcher: <b id="act-ver"></b></span>
+            <button class="boton oro peq" id="act-instalar">Actualizar ahora</button>
+        </div>
+
+        <!-- ===== INICIO ===== -->
+        <section class="vista activa" id="v-inicio">
+            <div class="hero">
+                <div>
+                    <span class="marca-chip">🇻🇪 Rol venezolano · Qbox</span>
+                    <h1>Bienvenido a<span id="nombre-servidor">Salto Ángel</span></h1>
+                    <p class="lema" id="lema"></p>
+                    <div class="jugar-fila">
+                        <button class="jugar" id="jugar"><svg class="ico" viewBox="0 0 24 24"><path d="M7 4.5v15a1 1 0 0 0 1.5.9l12-7.5a1 1 0 0 0 0-1.8l-12-7.5A1 1 0 0 0 7 4.5z"/></svg><span id="jugar-txt">JUGAR</span></button>
+                        <div class="jugar-nota">Se abre <b>FiveM oficial</b><br>y te conecta solo.</div>
+                    </div>
+                    <div class="enlaces" id="enlaces"></div>
+                </div>
+
+                <aside class="estado">
+                    <div class="estado-cab"><span class="t">Servidor</span><span class="pill cargando" id="pill"><i></i><span id="pill-txt">Revisando…</span></span></div>
+                    <div class="cifra"><b id="jug">–</b><span>/ <span id="max">128</span> jugadores</span></div>
+                    <div class="barra"><div id="barra"></div></div>
+                    <div class="datos">
+                        <div class="dato"><small>FiveM</small><b id="dato-fivem">Revisando…</b></div>
+                        <div class="dato"><small>Código</small><b id="dato-codigo">m4qzz8q</b></div>
+                    </div>
+                    <div class="fuente" id="fuente">Actualiza cada 30 s</div>
+                </aside>
+            </div>
+
+            <div class="seccion-t"><h2>Novedades</h2></div>
+            <div class="noticias" id="noticias"></div>
+        </section>
+
+        <!-- ===== OPTIMIZAR ===== -->
+        <section class="vista" id="v-optimizar">
+            <div class="cab-vista">
+                <h1>Optimizar <b>mi PC</b></h1>
+                <p>Todo se respalda antes y se puede deshacer. No se toca FiveM ni los archivos del GTA.</p>
+            </div>
+
+            <div class="aviso-fivem oculto" id="opt-fivem-abierto"><svg class="ico" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg>
+                <span><b>FiveM está abierto.</b> Ciérralo para cambiar los gráficos o limpiar la caché: el juego guarda sus opciones al salir y borraría el cambio.</span></div>
+
+            <div class="extremo" id="extremo">
+                <div class="ext-rayo"><svg class="ico" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></div>
+                <div class="ext-txt">
+                    <h2>Modo extremo <span class="ext-estado" id="ext-estado">Apagado</span></h2>
+                    <p>Todo al mínimo con un clic, para PCs débiles y laptops. Se ve más feo, pero se juega fluido.</p>
+                    <div class="ext-lista">
+                        <span>✓ Gráficos al mínimo</span><span>✓ Distancia de dibujo mínima</span><span>✓ Tarjeta de video potente</span>
+                        <span>✓ Alto rendimiento</span><span>✓ Sin grabación de Game Bar</span><span>✓ Modo juego</span>
+                    </div>
+                </div>
+                <div class="ext-acc">
+                    <button class="ext-boton" id="ext-boton">ACTIVAR</button>
+                    <button class="ext-volver" id="ext-volver" disabled>Volver como estaba</button>
+                </div>
+            </div>
+
+            <div class="opt-grid">
+                <div class="tarjeta col">
+                    <h3><svg class="ico" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Revisión de tu computadora</h3>
+                    <p class="sub" id="rev-cuando">Revisando…</p>
+                    <div id="checks"><div class="check"><span class="giro"></span><div class="q">Mirando tu PC…</div></div></div>
+                    <div class="pesados oculto" id="pesados">
+                        <div class="pes-t">Programas pesados abiertos</div>
+                        <div id="pes-lista"></div>
+                        <button class="boton peq" id="pes-cerrar" disabled>Cerrar los marcados</button>
+                    </div>
+                    <div class="acciones"><button class="boton" id="rev-otra">Revisar otra vez</button><button class="boton oculto" id="rev-driver">Bajar driver</button></div>
+                </div>
+                <div class="col-der">
+                    <div class="tarjeta col">
+                        <h3><svg class="ico" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Perfil de gráficos del GTA</h3>
+                        <p class="sub">Cambia las mismas opciones del menú del juego</p>
+                        <div class="perfiles" id="perfiles">
+                            <button class="perfil ext" data-perfil="extremo"><b>Extremo</b><small>Todo al mín.</small></button>
+                            <button class="perfil" data-perfil="bajo"><b>Bajo</b><small>Más FPS</small></button>
+                            <button class="perfil" data-perfil="medio"><b>Medio</b><small>Equilibrio</small></button>
+                            <button class="perfil" data-perfil="alto"><b>Alto</b><small>Más bonito</small></button>
+                        </div>
+                        <div class="aviso-mini">En el juego usa <b id="fps-rec">/fps → Bajo</b> para que combine. Para todavía más FPS: en el GTA, <b>Configuración → Gráficos → Escalado de fotogramas → 1/2</b> (se ve más borroso).</div>
+                        <div class="acciones"><button class="boton oro" id="perfil-aplicar" disabled>Aplicar perfil</button></div>
+                    </div>
+                    <div class="tarjeta col">
+                        <h3><svg class="ico" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>Limpiar caché de FiveM</h3>
+                        <p class="sub">Para mapas que no cargan, texturas raras o crasheos al entrar. No da más FPS y la próxima entrada tarda un poco más.</p>
+                        <div class="cache"><div class="mb" id="cache-mb">–</div><button class="boton" id="cache-limpiar" disabled>Limpiar ahora</button></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== AJUSTES ===== -->
+        <section class="vista" id="v-ajustes">
+            <div class="cab-vista">
+                <h1><b>Ajustes</b></h1>
+                <p>Se guardan en esta PC.</p>
+            </div>
+            <div class="tarjeta ajustes">
+                <label class="ajuste">
+                    <div><b>Minimizar el launcher al darle a Jugar</b><small>Para que no ocupe pantalla mientras juegas.</small></div>
+                    <input type="checkbox" id="aj-minimizar" checked><span class="switch"></span>
+                </label>
+                <div class="ajuste">
+                    <div><b>Versión del launcher</b><small id="aj-version">v0.1.0</small></div>
+                    <button class="boton" id="aj-buscar">Buscar actualización</button>
+                </div>
+                <div class="ajuste">
+                    <div><b>¿FiveM no abre?</b><small>Instala o reinstala FiveM desde su página oficial.</small></div>
+                    <button class="boton" id="aj-fivem">Página de FiveM</button>
+                </div>
+            </div>
+            <p class="legal">Salto Ángel Launcher no está afiliado a Rockstar Games, Take-Two ni Cfx.re. Solo abre el FiveM oficial y no modifica FiveM ni GTA V.</p>
+        </section>
+
+        <!-- Ventana: FiveM no instalado -->
+        <div class="modal-fondo oculto" id="modal-fivem">
+            <div class="modal">
+                <h3>No encontramos FiveM</h3>
+                <p>Para jugar en Salto Ángel necesitas <b>GTA V</b> (Steam, Epic o Rockstar) y <b>FiveM</b>, que es gratis. Bájalo de su página oficial, instálalo, ábrelo una vez y vuelve a darle a Jugar.</p>
+                <div class="acciones">
+                    <button class="boton oro" id="modal-bajar">Bajar FiveM (oficial)</button>
+                    <button class="boton" id="modal-igual">Intentar igual</button>
+                    <button class="boton fantasma" id="modal-cerrar">Cerrar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ventana: confirmar un cambio -->
+        <div class="modal-fondo oculto" id="modal-confirmar">
+            <div class="modal">
+                <h3 id="conf-titulo"></h3>
+                <p id="conf-texto"></p>
+                <ul class="conf-lista" id="conf-lista"></ul>
+                <div class="acciones">
+                    <button class="boton oro" id="conf-si">Sí, hazlo</button>
+                    <button class="boton fantasma" id="conf-no">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="toast" id="toast"></div>
+    </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
