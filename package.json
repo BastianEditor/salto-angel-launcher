@@ -1,6 +1,6 @@
 {
   "name": "salto-angel-launcher",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Launcher de Salto Ángel RP (Tauri 2). La pantalla está en src/, la parte nativa en src-tauri/.",
   "scripts": {

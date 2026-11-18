@@ -1,6 +1,6 @@
 [package]
 name = "salto-angel-launcher"
-version = "0.1.0"
+version = "0.1.1"
 description = "Launcher de Salto Ángel RP: abre el FiveM oficial y conecta al servidor"
 authors = ["Salto Ángel"]
 edition = "2021"

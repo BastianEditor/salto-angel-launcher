@@ -98,9 +98,34 @@ fn jugar(app: AppHandle, codigo: Option<String>) -> Result<(), String> {
         limpio
     };
     let url = format!("fivem://connect/cfx.re/join/{codigo}");
+    // FiveM solo acepta que lo abra Windows (el explorador) o un navegador: si lo abre el launcher
+    // directo sale "This application should be launched directly from the shell or a web browser".
+    // Por eso se le pasa el enlace al explorador de Windows, igual que un clic en un acceso directo.
+    if abrir_con_explorador(&url) {
+        return Ok(());
+    }
+    // Plan B: la página oficial cfx.re/join en el navegador, que ofrece abrir FiveM
     app.opener()
-        .open_url(url, None::<&str>)
+        .open_url(format!("https://cfx.re/join/{codigo}"), None::<&str>)
         .map_err(|e| format!("No se pudo abrir FiveM: {e}"))
+}
+
+#[cfg(windows)]
+fn abrir_con_explorador(url: &str) -> bool {
+    use std::os::windows::process::CommandExt;
+    let windir = std::env::var_os("WINDIR").unwrap_or_else(|| "C:\\Windows".into());
+    let explorador = PathBuf::from(windir).join("explorer.exe");
+    // explorer.exe responde con código 1 aunque funcione: solo importa que haya arrancado
+    std::process::Command::new(explorador)
+        .arg(url)
+        .creation_flags(SIN_VENTANA)
+        .spawn()
+        .is_ok()
+}
+
+#[cfg(not(windows))]
+fn abrir_con_explorador(_url: &str) -> bool {
+    false
 }
 
 /// Abre un enlace en el navegador. Solo https, para que nadie pueda usarlo para abrir otra cosa.
