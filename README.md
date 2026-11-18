@@ -37,17 +37,21 @@ Edita `publicar/config.json` y súbelo a GitHub:
 - `enlaces`: `url` vacío lo esconde. Solo acepta `https://`.
 - `servidor.codigo`: si algún día cambia el `cfx.re/join`.
 
-## Para publicarlo (una sola vez)
-1. **El dueño** crea una cuenta en github.com para el servidor (por ejemplo `SaltoAngelRP`).
-2. En esta PC se instala **GitHub CLI** y el dueño inicia sesión él mismo (`gh auth login`, se abre el navegador). Nadie le pide ni copia contraseñas.
-3. La sesión de Claude crea el repositorio `salto-angel-launcher`, sube esta carpeta y genera la **clave de las actualizaciones** con `npx @tauri-apps/cli signer generate`. La clave privada se guarda **fuera** de esta carpeta, en `C:\FXServer\_privado_launcher\` (no se sube ni se imprime), y va a los secretos de GitHub (`TAURI_SIGNING_PRIVATE_KEY` y `_PASSWORD`).
-4. Reemplazar los `PENDIENTE_*` en `src-tauri/tauri.conf.json` (`pubkey` y `endpoints`) y en `src/app.js` (`CONFIG_REMOTA`) con la clave pública y el usuario de GitHub.
-5. Subir a `main`: GitHub compila la prueba (Actions → Artifacts → `SaltoAngelLauncher.exe`).
-6. Crear la etiqueta `v0.1.0`: GitHub arma el instalador `Salto Angel Launcher_0.1.0_x64-setup.exe` y lo deja como borrador en Releases. Se prueba (ver abajo) y se publica.
-7. Enlace de descarga para la web y Discord: `https://github.com/<usuario>/salto-angel-launcher/releases/latest`.
+## Dónde está publicado (hecho el 18/11)
+- Repositorio público: **https://github.com/BastianEditor/salto-angel-launcher** (cuenta del dueño, `BastianEditor`).
+- Esta carpeta es un repositorio git (rama `main`). GitHub CLI está en `C:\Tools\gh\bin\gh.exe` con la sesión del dueño. Ojo: `C:\Tools` no está en el PATH, así que se llama con la ruta completa.
+- Clave de las actualizaciones: `C:\FXServer\_privado_launcher\` (privada, su contraseña y la pública; lee su `LEEME.txt`). **Nunca se sube ni se imprime.** Está cargada en los secretos de GitHub (`TAURI_SIGNING_PRIVATE_KEY` y `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`). Si se pierde, los launchers instalados no pueden actualizarse solos.
+- Enlace de descarga para la web y Discord: **https://github.com/BastianEditor/salto-angel-launcher/releases/latest**.
+- Instalador con la marca: las imágenes están en `src-tauri/instalador/` (`lateral.bmp` de 164×314 y `encabezado.bmp` de 150×57) y se rehacen con `generar_imagenes.py`.
+
+## Subir cambios
+```powershell
+cd C:\FXServer\launcher; git add -A; git commit -m "descripción"; git push
+```
+Cada subida a `main` compila una prueba: Actions → la corrida → Artifacts → `SaltoAngelLauncher.exe`.
 
 ## Sacar una versión nueva
-Sube el número en `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml` y `package.json`, sube los cambios y crea la etiqueta `vX.Y.Z`. Cuando el borrador esté probado y publicado, los launchers instalados avisan "Hay una versión nueva" y se actualizan con un clic.
+Sube el número en `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml` y `package.json`, sube los cambios y crea la etiqueta con `git tag vX.Y.Z; git push origin vX.Y.Z`. GitHub arma `Salto Angel Launcher_X.Y.Z_x64-setup.exe` y lo deja como **borrador** en Releases; se prueba y se publica con `C:\Tools\gh\bin\gh.exe release edit vX.Y.Z --draft=false`. Cuando el borrador esté probado y publicado, los launchers instalados avisan "Hay una versión nueva" y se actualizan con un clic.
 
 ## A prueba de errores (18/11)
 | Qué puede pasar en la PC del jugador | Qué hace el launcher |
